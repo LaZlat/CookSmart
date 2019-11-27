@@ -1,6 +1,9 @@
 package com.example.smartcook;
 
-public class Product {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Product implements Parcelable {
     protected String name;
     protected String image;
     protected boolean choose;
@@ -10,6 +13,25 @@ public class Product {
         this.image = image;
         choose = false;
     }
+
+
+    protected Product(Parcel in) {
+        name = in.readString();
+        image = in.readString();
+        choose = in.readByte() != 0;
+    }
+
+    public static final Creator<Product> CREATOR = new Creator<Product>() {
+        @Override
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
+        }
+
+        @Override
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -33,5 +55,17 @@ public class Product {
 
     public void setChoose(boolean choose) {
         this.choose = choose;
+    }
+
+    @Override
+    public int describeContents() {
+        return this.hashCode();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(image);
+        dest.writeByte((byte) (choose ? 1 : 0));
     }
 }

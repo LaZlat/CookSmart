@@ -29,12 +29,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder{
         public ImageView mImageView;
-        public TextView mTextView;
+        public ImageView mCheckImage;
 
         public ProductViewHolder(@NonNull View itemView, final OnItemClickListiner listiner) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.imageView);
-            mTextView = itemView.findViewById(R.id.textView);
+            mCheckImage = itemView.findViewById(R.id.checkImageView);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -60,20 +60,22 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_item, parent, false);
         ProductViewHolder pvh = new ProductViewHolder(v,mListiner);
         return pvh;
-    }
+}
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         Product currentItem = mProductList.get(position);
 
+        if(mProductList.get(position).isChoose() == true){
+            holder.mCheckImage.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.mCheckImage.setVisibility(View.INVISIBLE);
+        }
+
         Uri path = Uri.parse(currentItem.getImage());
         String sPath = path.toString();
         Picasso.get().load(sPath).into(holder.mImageView);
-
-        holder.mTextView.setText(currentItem.getName());
-
-
-
     }
 
     @Override

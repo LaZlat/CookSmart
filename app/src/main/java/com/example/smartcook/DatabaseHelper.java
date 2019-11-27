@@ -24,12 +24,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             while (res.moveToNext()){
                 Product mProduct = new Product(res.getString(1),res.getString(2));
                 productList.add(mProduct);
-                            }
+            }
             return productList;
         } catch (SQLException e){ }
         return null;
     }
 
+
+    public ArrayList getDishes(){
+        ArrayList<Dish> dishList = new ArrayList<>();
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor res = db.rawQuery("SELECT * FROM patiekalas_table", null);
+            while (res.moveToNext()){
+                Dish dDish = new Dish(res.getString(1),res.getString(3),res.getString(2));
+                dishList.add(dDish);
+            }
+            return dishList;
+        } catch (SQLException e){}
+        return null;
+    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
