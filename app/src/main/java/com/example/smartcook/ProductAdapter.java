@@ -23,6 +23,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         void onItemClick(int position);
     }
 
+    public interface OnClearButtonClicked{
+        void onButtonClicked(int position);
+    }
+
     public void setOnItemClickListiner(OnItemClickListiner listiner){
         mListiner = listiner;
     }

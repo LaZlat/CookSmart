@@ -1,5 +1,6 @@
 package com.example.smartcook;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -7,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
@@ -20,7 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private ProductAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutmanager;
-    ArrayList<Product> productList;
+    private ArrayList<Product> productList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +34,26 @@ public class MainActivity extends AppCompatActivity {
         productList = myDB.getProducts();
         accessAdapter();
 
+        if(savedInstanceState != null){
+            productList = savedInstanceState.getParcelableArrayList("savedInstance");
+        }
+
     }
 
     public void nextDishActivity(View view){
         Intent intent = new Intent(this,DishActivity.class);
         intent.putParcelableArrayListExtra("withBoolean", productList);
         startActivity(intent);
-        finish();
+        isDestroyed();
+    }
+
+    public void clearAllSelection(View view){
+
+        for(Product x : productList){
+            x.setChoose(false);
+        }
+        mAdapter.notifyDataSetChanged();
+
     }
 
 
@@ -57,16 +73,21 @@ public class MainActivity extends AppCompatActivity {
                 if(productList.get(position).isChoose() == false) {
                     productList.get(position).setChoose(true);
 
-                    mAdapter.notifyDataSetChanged();
+                    mAdapter.notifyItemChanged(position);
 
                 }
                 else if(productList.get(position).isChoose() == true) {
                     productList.get(position).setChoose(false);
-//
-                    mAdapter.notifyDataSetChanged();
 
+                    mAdapter.notifyItemChanged(position);
                 }
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("savedInstance", productList);
     }
 }

@@ -22,10 +22,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             SQLiteDatabase db = this.getWritableDatabase();
             Cursor res = db.rawQuery("SELECT * FROM produktas_table", null);
             while (res.moveToNext()){
-                Product mProduct = new Product(res.getString(1),res.getString(2));
+                Product mProduct = new Product(res.getInt(0),res.getString(1),res.getString(2));
                 productList.add(mProduct);
             }
+            db.close();
             return productList;
+        } catch (SQLException e){ }
+        return null;
+    }
+
+    public ArrayList getIngridients(){
+        ArrayList<Ingridient> ingridientList = new ArrayList<Ingridient>();
+        try{
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor res = db.rawQuery("SELECT * FROM ingridientas_table", null);
+            while (res.moveToNext()){
+                Ingridient iIngridient = new Ingridient(res.getInt(1),res.getInt(2));
+                ingridientList.add(iIngridient);
+            }
+            db.close();
+            return ingridientList;
         } catch (SQLException e){ }
         return null;
     }
@@ -37,9 +53,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             SQLiteDatabase db = this.getWritableDatabase();
             Cursor res = db.rawQuery("SELECT * FROM patiekalas_table", null);
             while (res.moveToNext()){
-                Dish dDish = new Dish(res.getString(1),res.getString(3),res.getString(2));
+                Dish dDish = new Dish(res.getInt(0),res.getString(1),res.getString(3),res.getString(2));
                 dishList.add(dDish);
             }
+            db.close();
             return dishList;
         } catch (SQLException e){}
         return null;

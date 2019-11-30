@@ -4,11 +4,16 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Product implements Parcelable {
+    protected int id;
     protected String name;
     protected String image;
     protected boolean choose;
 
-    public Product(String name, String image){
+    public Product() {
+    }
+
+    public Product(int id, String name, String image){
+        this.id = id;
         this.name = name;
         this.image = image;
         choose = false;
@@ -16,6 +21,7 @@ public class Product implements Parcelable {
 
 
     protected Product(Parcel in) {
+        id = in.readInt();
         name = in.readString();
         image = in.readString();
         choose = in.readByte() != 0;
@@ -35,6 +41,14 @@ public class Product implements Parcelable {
 
     public String getName() {
         return name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setName(String name) {
@@ -64,6 +78,7 @@ public class Product implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(name);
         dest.writeString(image);
         dest.writeByte((byte) (choose ? 1 : 0));

@@ -21,7 +21,7 @@ import uk.co.deanwild.flowtextview.FlowTextView;
 public class DishAdapter extends RecyclerView.Adapter<DishAdapter.DishViewHolder> {
 
 
-    private ArrayList<Dish> dDishList;
+    private ArrayList<Dish> dDishList = new ArrayList<>();
 
     public static class DishViewHolder extends RecyclerView.ViewHolder {
         public ImageView dImageView;
@@ -38,7 +38,11 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.DishViewHolder
     }
 
     public DishAdapter(ArrayList<Dish> dishArrayList){
-        this.dDishList = dishArrayList;
+        for (Dish x : dishArrayList) {
+            if(x.isChoose() == true) {
+                this.dDishList.add(x);
+            }
+        }
     }
 
 
