@@ -27,6 +27,7 @@
         android:layout_marginTop="31dp"
         android:gravity="center"
         android:text="Uh oh, dėja liksi alkanas..."
+        android:textColor="#00853E"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/errorImage" />

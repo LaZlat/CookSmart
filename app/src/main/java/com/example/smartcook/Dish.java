@@ -1,8 +1,11 @@
 package com.example.smartcook;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
-public class Dish extends Product {
+public class Dish extends Product implements Parcelable {
     protected String description;
 
 
@@ -15,6 +18,34 @@ public class Dish extends Product {
     public Dish() {
     }
 
+    protected Dish(Parcel in) {
+        super(in);
+        description = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(description);
+    }
+
+    @Override
+    public int describeContents() {
+        return this.hashCode();
+    }
+
+    public static final Creator<Dish> CREATOR = new Creator<Dish>() {
+        @Override
+        public Dish createFromParcel(Parcel in) {
+            return new Dish(in);
+        }
+
+        @Override
+        public Dish[] newArray(int size) {
+            return new Dish[size];
+        }
+    };
+
     public String getDescription() {
         return description;
     }
@@ -24,7 +55,8 @@ public class Dish extends Product {
     }
 
     public ArrayList sortDishes(ArrayList<Dish>dishList, ArrayList<Product> productList, ArrayList <Ingridient> ingridientList) {
-            for (Dish x : dishList){
+        ArrayList<Dish> newDishList = new ArrayList<>();
+        for (Dish x : dishList){
                 for (Ingridient y : ingridientList){
                     if(x.getId() == y.getPatiekalasID()){
                         for(Product z : productList){
@@ -35,8 +67,21 @@ public class Dish extends Product {
                     }
                 }
             }
-        return dishList;
+
+        for (Dish x :dishList){
+            if(x.isChoose() == true){
+                newDishList.add(x);
+            }
+        }
+        return newDishList;
     }
 
+
+    @Override
+    public String toString() {
+        return "Dish{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }
 

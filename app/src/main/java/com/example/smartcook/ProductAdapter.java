@@ -23,9 +23,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         void onItemClick(int position);
     }
 
-    public interface OnClearButtonClicked{
-        void onButtonClicked(int position);
-    }
 
     public void setOnItemClickListiner(OnItemClickListiner listiner){
         mListiner = listiner;
@@ -80,6 +77,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         Uri path = Uri.parse(currentItem.getImage());
         String sPath = path.toString();
         Picasso.get().load(sPath).into(holder.mImageView);
+
     }
 
     @Override
