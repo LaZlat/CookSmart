@@ -72,6 +72,11 @@ public class AddActivity extends AppCompatActivity {
 
     }
 
+    public void startDeleteActivity(View v){
+        Intent intent = new Intent(this,DeleteActivity.class);
+        startActivity(intent);
+    }
+
     private void openFileChooser(){
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_PICK);
@@ -92,22 +97,7 @@ public class AddActivity extends AppCompatActivity {
         }
     }
 
-//    public String getRealPathFromURI(Uri contentUri) {
-//        Cursor cursor = null;
-//        try {
-//            String[] proj = {MediaStore.Images.Media.DATA};
-//            cursor = getContentResolver().query(contentUri, proj, null, null,
-//                    null);
-//            int column_index = cursor
-//                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-//            cursor.moveToFirst();
-//            return cursor.getString(column_index);
-//        } finally {
-//            if (cursor != null) {
-//                cursor.close();
-//            }
-//        }
-//    }
+
 
     public void addNewDishToDB(View v){
         Dish newDish = new Dish();
@@ -116,7 +106,7 @@ public class AddActivity extends AppCompatActivity {
         newDish.setDescription(receptasEditText.getText().toString());
         newDish.setImage("file://"+aImageStringPath);
 
-        myDB.addDish(newDish);
+        myDB.addDish(newDish,productList);
 
         Toast toast = Toast.makeText(getApplicationContext(), "Pridėtas naujas patiekalas!",Toast.LENGTH_SHORT);
         toast.show();

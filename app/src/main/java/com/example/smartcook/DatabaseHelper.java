@@ -2,6 +2,7 @@ package com.example.smartcook;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ArrayList<Product> productList = new ArrayList<Product>();
         try{
             SQLiteDatabase db = this.getWritableDatabase();
-            Cursor res = db.rawQuery("SELECT * FROM produktas_table", null);
+            Cursor res = db.rawQuery("SELECT ID, NAME, IMAGE FROM produktas_table", null);
             while (res.moveToNext()){
                 Product mProduct = new Product(res.getInt(0),res.getString(1),res.getString(2));
                 productList.add(mProduct);
@@ -37,9 +38,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ArrayList<Ingridient> ingridientList = new ArrayList<Ingridient>();
         try{
             SQLiteDatabase db = this.getWritableDatabase();
-            Cursor res = db.rawQuery("SELECT * FROM ingridientas_table", null);
+            Cursor res = db.rawQuery("SELECT PATIEKALAS_ID, PRODUKTAS_ID FROM ingridientas_table", null);
             while (res.moveToNext()){
-                Ingridient iIngridient = new Ingridient(res.getInt(1),res.getInt(2));
+                Ingridient iIngridient = new Ingridient(res.getInt(0),res.getInt(1));
                 ingridientList.add(iIngridient);
             }
             db.close();
@@ -53,7 +54,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ArrayList<Dish> dishList = new ArrayList<>();
         try {
             SQLiteDatabase db = this.getWritableDatabase();
-            Cursor res = db.rawQuery("SELECT * FROM patiekalas_table", null);
+            Cursor res = db.rawQuery("SELECT ID, NAME,DESCRIBE,IMAGE FROM patiekalas_table", null);
             while (res.moveToNext()){
                 Dish dDish = new Dish(res.getInt(0),res.getString(1),res.getString(3),res.getString(2));
                 dishList.add(dDish);
@@ -65,7 +66,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public void addDish(Dish newDish){
+    public void addDish(Dish newDish, ArrayList<Product> productsList){
+        int newDishID;
         try{
             SQLiteDatabase db = this.getWritableDatabase();
             String sql = "INSERT INTO patiekalas_table (NAME, DESCRIBE, IMAGE) VALUES (?, ?, ?)";
@@ -76,8 +78,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             statement.bindString(3,newDish.getImage());
 
             long rowID = statement.executeInsert();
+
+            newDishID = returnDishID(newDish);
+
+            for(Product x : productsList){
+                if(x.isChoose() == true) {
+                    String sql1 = "INSERT INTO ingridientas_table (PATIEKALAS_ID, PRODUKTAS_ID) VALUES (?, ?)";
+                    SQLiteStatement statement1 = db.compileStatement(sql1);
+
+                    statement1.bindLong(1,newDishID);
+                    statement1.bindLong(2,x.getId());
+
+                    long rowID1 = statement1.executeInsert();
+                }
+            }
             db.close();
         } catch (SQLException e){}
+
+    }
+
+    public int returnDishID(Dish newDish){
+        try{
+            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@2");
+            System.out.println(newDish.getName());
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor res = db.rawQuery("SELECT ID FROM patiekalas_table WHERE NAME = '" + newDish.getName() + "'",null);
+            res.moveToFirst();
+            int newDishID = res.getInt(0);
+            return newDishID;
+        } catch (SQLException e){}
+        return 0;
+    }
+
+    public Integer deleteDish(String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT ID FROM patiekalas_table WHERE NAME = '" + name + "'",null);
+        res.moveToFirst();
+        int newDishID = res.getInt(0);
+
+        db.delete("ingridientas_table", "PATIEKALAS_ID = ?", new String[] {String.valueOf(newDishID)});
+
+        return db.delete("patiekalas_table","NAME = ?",new String[] {name});
     }
 
     @Override
