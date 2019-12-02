@@ -18,6 +18,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, "CookSmart.db",null,1);
     }
 
+    public ArrayList getUsers(){
+        ArrayList<User> usersList = new ArrayList<>();
+        try{
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor res = db.rawQuery("SELECT NAME, PASSWORD, ADMIN FROM users_table", null);
+            while (res.moveToNext()){
+                User newUser = new User(res.getString(0),res.getString(1),res.getInt(2));
+                usersList.add(newUser);
+            }
+            db.close();
+            return usersList;
+        } catch (SQLException e){ }
+        return null;
+    }
+
 
     public ArrayList getProducts(){
         ArrayList<Product> productList = new ArrayList<Product>();
@@ -63,6 +78,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return dishList;
         } catch (SQLException e){}
         return null;
+    }
+
+    public User getRootUser(){
+        User rootUser;
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor res = db.rawQuery("SELECT NAME,PASSWORD,ADMIN FROM users_table WHERE ID = '1'", null);
+            res.moveToFirst();
+            rootUser = new User(res.getString(0),res.getString(1),res.getInt(2));
+            db.close();
+            return rootUser;
+        } catch (SQLException e){}
+        return null;
+        }
+
+
+    public void addUser(String name, String pass, int admin){
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            String sql = "INSERT INTO users_table (NAME, PASSWORD, ADMIN) VALUES (?, ?, ?)";
+            SQLiteStatement statement = db.compileStatement(sql);
+
+            statement.bindString(1,name);
+            statement.bindString(2,pass);
+            statement.bindLong(3,admin);
+
+            long rowID = statement.executeInsert();
+            db.close();
+        } catch (SQLException e) {}
     }
 
 
@@ -126,6 +170,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + "patiekalas_table" + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, DESCRIBE TEXT, IMAGE TEXT)");
         db.execSQL("CREATE TABLE " + "produktas_table" + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, IMAGE TEXT)");
         db.execSQL("CREATE TABLE " + "ingridientas_table" + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, PATIEKALAS_ID INTEGER, PRODUKTAS_ID INTEGER)");
+        db.execSQL("CREATE TABLE " + "users_table" + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, PASSWORD TEXT, ADMIN INTEGER)");
+
     }
 
     @Override
@@ -133,6 +179,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + "patiekalas_table");
         db.execSQL("DROP TABLE IF EXISTS " + "produktas_table");
         db.execSQL("DROP TABLE IF EXISTS " + "ingridientas_table");
+        db.execSQL("DROP TABLE IF EXISTS " + "users_table");
         onCreate(db);
     }
 }

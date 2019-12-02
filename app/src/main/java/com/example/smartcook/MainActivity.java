@@ -38,12 +38,21 @@ public class MainActivity extends AppCompatActivity {
         productList = myDB.getProducts();
         accessAdapter();
 
-//        Slidr.attach(this);
 
         if(savedInstanceState != null){
             productList = savedInstanceState.getParcelableArrayList("savedInstance");
         }
 
+    }
+
+    public void wantAll (View view){
+        for(Product x : productList){
+            x.setChoose(true);
+        }
+        Intent intent = new Intent(this,DishActivity.class);
+        intent.putParcelableArrayListExtra("withBoolean", productList);
+        startActivity(intent);
+        isDestroyed();
     }
 
     public void nextDishActivity(View view){
@@ -72,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 x2 = event.getX();
                 y1 = event.getY();
                 if (x1 > x2) {
-                    Intent intent = new Intent(MainActivity.this, AddActivity.class);
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     intent.putParcelableArrayListExtra("ProductList", productList);
                     startActivity(intent);
                 }

@@ -25,8 +25,11 @@ import java.util.ArrayList;
 public class AddActivity extends AppCompatActivity {
     private static final int SELECT_PHOTO = 100;
 
+    private int loginInfo;
     private String aImageStringPath;
+    private Boolean isProductOk;
 
+    private Button delButton;
     private Button uploadButton;
     private EditText pavadinimasText;
     private EditText receptasEditText;
@@ -49,6 +52,9 @@ public class AddActivity extends AppCompatActivity {
 
         myDB = new DatabaseHelper(this);
 
+        Intent intent = getIntent();
+        loginInfo = intent.getIntExtra("IntVar",0);
+
         productList = myDB.getProducts();
 
         uploadButton = findViewById(R.id.uploadButton);
@@ -56,6 +62,11 @@ public class AddActivity extends AppCompatActivity {
         pavadinimasText = findViewById(R.id.pavadinimasText);
         receptasEditText = findViewById(R.id.receptasText);
         produktasRecyclerView = findViewById(R.id.produktasRecyclerView);
+        delButton = findViewById(R.id.delButton);
+
+        if(loginInfo == 0){
+            delButton.setEnabled(false);
+        }
 
         accessAdapter();
         focusChange();
@@ -102,14 +113,19 @@ public class AddActivity extends AppCompatActivity {
     public void addNewDishToDB(View v){
         Dish newDish = new Dish();
 
-        newDish.setName(pavadinimasText.getText().toString());
-        newDish.setDescription(receptasEditText.getText().toString());
-        newDish.setImage("file://"+aImageStringPath);
+        if(!pavadinimasText.getText().toString().isEmpty() && !receptasEditText.getText().toString().isEmpty() && aImageStringPath != null && isProductOk==true ) {
+            newDish.setName(pavadinimasText.getText().toString());
+            newDish.setDescription(receptasEditText.getText().toString());
+            newDish.setImage("file://" + aImageStringPath);
 
-        myDB.addDish(newDish,productList);
+            myDB.addDish(newDish, productList);
 
-        Toast toast = Toast.makeText(getApplicationContext(), "Pridėtas naujas patiekalas!",Toast.LENGTH_SHORT);
-        toast.show();
+            Toast toast = Toast.makeText(getApplicationContext(), "Pridėtas naujas patiekalas!", Toast.LENGTH_SHORT);
+            toast.show();
+        } else{
+            Toast toast = Toast.makeText(getApplicationContext(), "Įveskite visus duomenis!", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 
 
@@ -152,13 +168,13 @@ public class AddActivity extends AppCompatActivity {
             public void onItemClick(View v, int position) {
                 if(productList.get(position).isChoose() == false) {
                     productList.get(position).setChoose(true);
-
+                    isProductOk = true;
                     aAdapter.notifyItemChanged(position);
 
                 }
                 else if(productList.get(position).isChoose() == true) {
                     productList.get(position).setChoose(false);
-
+                    isProductOk = false;
                     aAdapter.notifyItemChanged(position);
                 }
             }

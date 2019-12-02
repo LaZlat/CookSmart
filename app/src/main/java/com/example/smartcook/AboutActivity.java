@@ -39,8 +39,6 @@ public class AboutActivity extends AppCompatActivity {
         ingridientsList = intent.getParcelableArrayListExtra("Ingridients");
         productsList = intent.getParcelableArrayListExtra("Products");
 
-//        accessSmallAdapter();
-
         populateView();
 
     }
