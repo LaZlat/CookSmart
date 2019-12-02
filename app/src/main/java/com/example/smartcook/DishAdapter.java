@@ -82,7 +82,8 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.DishViewHolder
 
         Uri path = Uri.parse(currentItem.getImage());
         String sPath = path.toString();
-        Picasso.get().load(sPath).into(holder.dImageView);
+        Picasso.get().load(sPath).centerCrop().resize(400,300).error(R.drawable.ic_error).into(holder.dImageView);
+
 
         holder.dTextView.setText(dDishList.get(position).getName());
 

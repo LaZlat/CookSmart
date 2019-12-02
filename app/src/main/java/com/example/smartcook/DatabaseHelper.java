@@ -6,7 +6,9 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -60,6 +62,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return dishList;
         } catch (SQLException e){}
         return null;
+    }
+
+
+    public void addDish(Dish newDish){
+        try{
+            SQLiteDatabase db = this.getWritableDatabase();
+            String sql = "INSERT INTO patiekalas_table (NAME, DESCRIBE, IMAGE) VALUES (?, ?, ?)";
+            SQLiteStatement statement = db.compileStatement(sql);
+
+            statement.bindString(1,newDish.getName());
+            statement.bindString(2,newDish.getDescription());
+            statement.bindString(3,newDish.getImage());
+
+            long rowID = statement.executeInsert();
+            db.close();
+        } catch (SQLException e){}
     }
 
     @Override

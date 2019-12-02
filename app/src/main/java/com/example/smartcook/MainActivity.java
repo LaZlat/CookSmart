@@ -9,10 +9,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
+
+import com.r0adkll.slidr.Slidr;
 
 import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private ProductAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutmanager;
     private ArrayList<Product> productList;
+    private float x1,x2,y1,y2;
 
 
     @Override
@@ -33,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
         myDB = new DatabaseHelper(this);
         productList = myDB.getProducts();
         accessAdapter();
+
+//        Slidr.attach(this);
 
         if(savedInstanceState != null){
             productList = savedInstanceState.getParcelableArrayList("savedInstance");
@@ -56,7 +62,25 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public boolean onTouchEvent(MotionEvent event){
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                x1 = event.getX();
+                y1 = event.getY();
+                break;
+            case MotionEvent.ACTION_UP:
+                x2 = event.getX();
+                y1 = event.getY();
+                if (x1 > x2) {
+                    Intent intent = new Intent(MainActivity.this, AddActivity.class);
+                    intent.putParcelableArrayListExtra("ProductList", productList);
+                    startActivity(intent);
+                }
+                break;
+        }
+        return false;
 
+    }
 
     public void accessAdapter(){
         mRecyclerView = findViewById(R.id.recyclerView);
