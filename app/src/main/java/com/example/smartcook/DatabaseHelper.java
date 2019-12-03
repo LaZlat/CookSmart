@@ -93,7 +93,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
         }
 
-
     public void addUser(String name, String pass, int admin){
         try {
             SQLiteDatabase db = this.getWritableDatabase();
@@ -171,6 +170,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + "produktas_table" + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, IMAGE TEXT)");
         db.execSQL("CREATE TABLE " + "ingridientas_table" + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, PATIEKALAS_ID INTEGER, PRODUKTAS_ID INTEGER)");
         db.execSQL("CREATE TABLE " + "users_table" + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, PASSWORD TEXT, ADMIN INTEGER)");
+        String sql = "INSERT INTO produktas_table (NAME, IMAGE) VALUES (?,?)";
+        db.execSQL(sql,new String[] {"Duona","android.resource://com.example.smartcook/drawable/duona"});
+        db.execSQL(sql,new String[] {"Suris","android.resource://com.example.smartcook/drawable/suris"});
+        db.execSQL(sql,new String[] {"Cesnakas", "android.resource://com.example.smartcook/drawable/cesnakas"});
+        String sql1 = "INSERT INTO patiekalas_table (NAME, DESCRIBE, IMAGE) VALUES (?,?,?)";
+        db.execSQL(sql1, new String[] {"Kepta duona su suriu", "Mmm, kaip skanu, imk ir valgyk", "android.resource://com.example.smartcook/drawable/keptaduona"});
+        String sql2 = "INSERT INTO ingridientas_table (PATIEKALAS_ID, PRODUKTAS_ID) VALUES (?,?)";
+        db.execSQL(sql2, new String[] {String.valueOf(1),String.valueOf(1)});
+        db.execSQL(sql2, new String[] {String.valueOf(1),String.valueOf(2)});
+        db.execSQL(sql2, new String[] {String.valueOf(1),String.valueOf(3)});
+        String sql3 = "INSERT INTO users_table (NAME,PASSWORD,ADMIN) VALUES (?,?,?)";
+        db.execSQL(sql3,new String[] {"admin","admin",String.valueOf(1)});
 
     }
 

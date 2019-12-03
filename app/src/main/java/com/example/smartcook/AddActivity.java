@@ -1,12 +1,17 @@
 package com.example.smartcook;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +29,7 @@ import java.util.ArrayList;
 
 public class AddActivity extends AppCompatActivity {
     private static final int SELECT_PHOTO = 100;
+    private int STORAGE_PREMISSION_CODE = 1;
 
     private int loginInfo;
     private String aImageStringPath;
@@ -74,6 +80,11 @@ public class AddActivity extends AppCompatActivity {
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(ContextCompat.checkSelfPermission(AddActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                }
+                else {
+                    ActivityCompat.requestPermissions(AddActivity.this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PREMISSION_CODE);
+                }
                 openFileChooser();
             }
         });
@@ -180,6 +191,5 @@ public class AddActivity extends AppCompatActivity {
             }
         });
     }
-
 
 }
